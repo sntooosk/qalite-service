@@ -1,12 +1,17 @@
 {
   "name": "qamanager-server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Proxy services for QA Manager integrations",
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "vercel dev"
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsc -w -p tsconfig.json",
+    "lint": "npm run build && eslint dist --ext .js",
+    "format": "prettier --write .",
+    "check-commit": "node scripts/check-commit-message.mjs",
+    "prepare": "husky install"
   },
   "keywords": [
     "qa",
@@ -14,12 +19,11 @@
     "browserstack",
     "slack"
   ],
-  "author": "",
   "license": "MIT",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
+  "devDependencies": {
+    "eslint": "^9.9.0",
+    "husky": "^9.1.4",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
   }
 }
