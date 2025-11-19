@@ -1,7 +1,13 @@
 #!/bin/sh
 
-if [ -x "./node_modules/.bin/commitlint" ]; then
-  npx --no commitlint --edit "$1"
+COMMIT_MSG_FILE="$1"
+
+if [ -z "$COMMIT_MSG_FILE" ]; then
+  COMMIT_MSG_FILE=".git/COMMIT_EDITMSG"
+fi
+
+if [ -f "./node_modules/@commitlint/cli/cli.js" ]; then
+  node ./node_modules/@commitlint/cli/cli.js --edit "$COMMIT_MSG_FILE"
 else
   echo "[husky] commitlint skipped (dependency not installed)"
 fi
