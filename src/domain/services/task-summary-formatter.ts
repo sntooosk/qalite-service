@@ -52,65 +52,70 @@ const formatAttendee = (entry?: AttendeeEntry): string => {
 export class TaskSummaryFormatter {
   buildMessage({ environmentSummary }: TaskSummaryPayload): string {
     const summary = environmentSummary ?? {}
-    const lines: string[] = []
+    const lines: string[] = ['✨ *Resumo de QA*', '']
 
-    const pushSection = (label: string, values: string[]): void => {
-      lines.push(label)
-      values.filter(Boolean).forEach((value) => lines.push(value))
+    const pushField = (label: string, value: string): void => {
+      const sanitized = value.trim() || 'Não informado'
+      lines.push(`• *${label}:* ${sanitized}`)
     }
 
     const totalTime = toText(summary.totalTime) || formatDurationHMS(summary.totalTimeMs) || '00:00:00'
-    pushSection('Tempo total', [totalTime])
+    pushField('Tempo total', totalTime)
 
     const scenariosCount =
       typeof summary.scenariosCount === 'number' && summary.scenariosCount >= 0
         ? String(summary.scenariosCount)
         : '0'
-    pushSection('Cenários', [scenariosCount])
+    pushField('Cenários', scenariosCount)
 
     const executedMessage =
       toText(summary.executedScenariosMessage) ||
       (typeof summary.executedScenariosCount === 'number'
         ? `${summary.executedScenariosCount} ${
-            summary.executedScenariosCount === 1 ? 'cenário' : 'cenários'
-          } executados`
+            summary.executedScenariosCount === 1 ? 'cenário executado' : 'cenários executados'
+          }`
         : '')
     if (executedMessage) {
-      lines.push(executedMessage)
+      pushField('Execução', executedMessage)
     }
 
     const storyfixValue =
       typeof summary.storyfixCount === 'number' && summary.storyfixCount >= 0
         ? String(summary.storyfixCount)
         : '0'
-    pushSection('Storyfix registrados', [storyfixValue])
+    pushField('Storyfix registrados', storyfixValue)
 
     const jiraValue = toText(summary.jira) || 'Não informado'
-    pushSection('Jira', [jiraValue])
+    pushField('Jira', jiraValue)
 
     const suiteName = toText(summary.suiteName) || 'Não informado'
     const suiteDetails = toText(summary.suiteDetails)
-    pushSection('Suíte', suiteDetails ? [suiteName, suiteDetails] : [suiteName])
+    pushField('Suíte', suiteDetails ? `${suiteName} — ${suiteDetails}` : suiteName)
 
     const participantsCount =
       typeof summary.participantsCount === 'number' && summary.participantsCount >= 0
         ? String(summary.participantsCount)
         : '0'
-    pushSection('Participantes', [participantsCount])
+    pushField('Participantes', participantsCount)
 
     const urls = summary.monitoredUrls?.map((url) => url?.trim()).filter(Boolean)
-    pushSection('URLs monitoradas', urls && urls.length > 0 ? urls : ['Não informado'])
+    if (urls && urls.length > 0) {
+      lines.push('• *🌐 URLs monitoradas:*')
+      urls.forEach((url) => lines.push(`  - ${url}`))
+    } else {
+      pushField('URLs monitoradas', 'Não informado')
+    }
 
     const attendees = summary.attendees
       ?.map((person) => formatAttendee(person))
       .filter((value) => Boolean(value && value.trim()))
 
     lines.push('')
-    lines.push('Quem está participando')
+    lines.push('👥 *Quem está participando*')
     if (attendees && attendees.length > 0) {
-      attendees.forEach((entry) => lines.push(entry))
+      attendees.forEach((entry) => lines.push(`• ${entry}`))
     } else {
-      lines.push('Não informado')
+      lines.push('• Não informado')
     }
 
     return lines.join('\n')
