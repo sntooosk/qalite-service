@@ -41,14 +41,8 @@ const normalize = (value: string | undefined): string | undefined => {
   return trimmed ? trimmed : undefined
 }
 
-export interface BrowserstackCredentials {
-  username: string
-  accessKey: string
-}
-
 export interface AppConfig {
   allowedOrigins: string[]
-  browserstack?: BrowserstackCredentials
   slackWebhookUrl?: string
   port: number
   isProduction: boolean
@@ -56,14 +50,6 @@ export interface AppConfig {
 
 export const config: AppConfig = {
   allowedOrigins: parseList(process.env.ALLOWED_ORIGINS, DEFAULT_ALLOWED_ORIGINS),
-  browserstack:
-    normalize(process.env.BROWSERSTACK_USERNAME) &&
-    normalize(process.env.BROWSERSTACK_ACCESS_KEY)
-      ? {
-          username: normalize(process.env.BROWSERSTACK_USERNAME) as string,
-          accessKey: normalize(process.env.BROWSERSTACK_ACCESS_KEY) as string,
-        }
-      : undefined,
   slackWebhookUrl: normalize(process.env.SLACK_TASK_SUMMARY_WEBHOOK_URL),
   port: Number.parseInt(process.env.PORT ?? '3000', 10) || 3000,
   isProduction: process.env.NODE_ENV === 'production',

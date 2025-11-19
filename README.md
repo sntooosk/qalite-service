@@ -1,15 +1,14 @@
 # QA Manager Proxy API
 
-Servidor HTTP minimalista escrito em TypeScript que atua como ponte entre o QA Manager,
-o BrowserStack e o Slack. O código foi reduzido a poucos arquivos para facilitar a leitura
-e a manutenção sem depender de frameworks externos.
+Servidor HTTP minimalista escrito em TypeScript que atua como ponte entre o QA Manager
+e o Slack. O código foi reduzido a poucos arquivos para facilitar a leitura e a
+manutenção sem depender de frameworks externos.
 
 ## Rotas
 
 | Método | Rota | Descrição |
 | --- | --- | --- |
 | `GET` | `/health` | Retorna `status: ok` para verificação rápida. |
-| `GET` | `/browserstack/builds` | Lista os builds da API Automate do BrowserStack. |
 | `POST` | `/slack/task-summary` | Envia um resumo simples de tarefa para um webhook do Slack. |
 
 ## Variáveis de ambiente
@@ -17,8 +16,6 @@ e a manutenção sem depender de frameworks externos.
 Crie um arquivo `.env` (opcional) com os dados abaixo:
 
 ```
-BROWSERSTACK_USERNAME=seu_usuario
-BROWSERSTACK_ACCESS_KEY=sua_chave
 SLACK_TASK_SUMMARY_WEBHOOK_URL=https://hooks.slack.com/services/...
 ALLOWED_ORIGINS=http://localhost:5173,https://seu-frontend.com
 PORT=3000

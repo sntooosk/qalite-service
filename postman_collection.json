@@ -25,25 +25,6 @@
       "response": []
     },
     {
-      "name": "Listar builds do BrowserStack",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/browserstack/builds",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "browserstack",
-            "builds"
-          ]
-        },
-        "description": "Retorna a lista de builds retornados pela API do BrowserStack configurada no serviço."
-      },
-      "response": []
-    },
-    {
       "name": "Enviar resumo da tarefa para o Slack",
       "request": {
         "method": "POST",
@@ -55,7 +36,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"submittedBy\": {\n    \"name\": \"Maria QA\",\n    \"email\": \"maria@example.com\"\n  },\n  \"scenario\": {\n    \"title\": \"Fluxo de pagamento via Pix\",\n    \"stage\": \"Homologação\",\n    \"category\": \"Financeiro\"\n  },\n  \"environment\": {\n    \"label\": \"Sandbox QA\",\n    \"taskUrl\": \"https://app.asana.com/0/123456789/987654321\"\n  },\n  \"test\": {\n    \"platform\": \"BrowserStack - Chrome 114 (Windows 11)\",\n    \"status\": \"Aprovado\",\n    \"durationMs\": 125000,\n    \"completedAt\": 1714418400000\n  }\n}"
+          "raw": "{\n  \"submittedBy\": {\n    \"name\": \"Maria QA\",\n    \"email\": \"maria@example.com\"\n  },\n  \"scenario\": {\n    \"title\": \"Fluxo de pagamento via Pix\",\n    \"stage\": \"Homologação\",\n    \"category\": \"Financeiro\"\n  },\n  \"environment\": {\n    \"label\": \"Sandbox QA\",\n    \"taskUrl\": \"https://app.asana.com/0/123456789/987654321\"\n  },\n  \"test\": {\n    \"platform\": \"Chrome 114 (Windows 11)\",\n    \"status\": \"Aprovado\",\n    \"durationMs\": 125000,\n    \"completedAt\": 1714418400000\n  }\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/slack/task-summary",

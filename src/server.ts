@@ -2,26 +2,21 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 
 import { config } from './config.js'
 import { HttpError } from './errors.js'
-import { ListBrowserstackBuildsUseCase } from './application/usecases/list-browserstack-builds.js'
 import { SendTaskSummaryUseCase } from './application/usecases/send-task-summary.js'
 import { TaskSummaryFormatter } from './domain/services/task-summary-formatter.js'
-import { BrowserstackApiGateway } from './infrastructure/browserstack/browserstack-gateway.js'
 import { SlackWebhookNotifier } from './infrastructure/slack/slack-webhook-notifier.js'
 import { applyCors } from './interfaces/http/cors.js'
 import { json } from './interfaces/http/http-response.js'
 import { HttpRouter } from './interfaces/http/router.js'
 import { buildRouteTable } from './interfaces/http/routes.js'
 
-const browserstackGateway = new BrowserstackApiGateway(config.browserstack)
 const slackNotifier = new SlackWebhookNotifier(config.slackWebhookUrl)
 const formatter = new TaskSummaryFormatter()
 
-const listBrowserstackBuildsUseCase = new ListBrowserstackBuildsUseCase(browserstackGateway)
 const sendTaskSummaryUseCase = new SendTaskSummaryUseCase(formatter, slackNotifier)
 
 const router = new HttpRouter(
   buildRouteTable({
-    listBrowserstackBuilds: listBrowserstackBuildsUseCase,
     sendTaskSummary: sendTaskSummaryUseCase,
   }),
 )
