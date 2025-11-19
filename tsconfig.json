@@ -11,8 +11,8 @@
     "skipLibCheck": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["./types"],
-    "lib": ["es2022", "dom"]
+    "lib": ["es2022", "dom"],
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": ["src", "types"],
   "exclude": ["dist"]

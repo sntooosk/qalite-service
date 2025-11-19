@@ -10,7 +10,6 @@
     "dev": "tsc -w -p tsconfig.json",
     "lint": "npm run build && eslint dist --ext .js",
     "format": "prettier --write .",
-    "check-commit": "node scripts/check-commit-message.mjs",
     "prepare": "husky install"
   },
   "keywords": [
@@ -21,6 +20,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@types/node": "^22.5.2",
     "eslint": "^9.9.0",
     "husky": "^9.1.4",
     "prettier": "^3.3.3",

@@ -1,12 +1,13 @@
 declare module 'node:http' {
   import { EventEmitter } from 'events'
 
-  interface IncomingMessage extends EventEmitter {
+  interface IncomingMessage extends EventEmitter, AsyncIterable<Buffer> {
     headers: Record<string, string | string[] | undefined>
     method?: string
     url?: string
     on(event: 'data', listener: (chunk: any) => void): this
     on(event: 'end', listener: () => void): this
+    [Symbol.asyncIterator](): AsyncIterableIterator<Buffer>
   }
 
   interface ServerResponse extends EventEmitter {

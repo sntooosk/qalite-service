@@ -1,19 +1,20 @@
 # QA Manager Proxy API
 
-Serviço HTTP minimalista escrito em TypeScript e organizado com princípios de Clean Architecture.
-Ele atua como um proxy seguro entre o QA Manager, o BrowserStack e os webhooks do Slack.
+Servidor HTTP minimalista escrito em TypeScript que atua como ponte entre o QA Manager,
+o BrowserStack e o Slack. O código foi reduzido a poucos arquivos para facilitar a leitura
+e a manutenção sem depender de frameworks externos.
 
-## Rotas expostas
+## Rotas
 
 | Método | Rota | Descrição |
 | --- | --- | --- |
-| `GET` | `/health` | Verifica se o serviço está disponível. |
-| `GET` | `/browserstack/builds` | Lista os builds do BrowserStack Automate. |
-| `POST` | `/slack/task-summary` | Envia um resumo de tarefa concluída para o Slack. |
+| `GET` | `/health` | Retorna `status: ok` para verificação rápida. |
+| `GET` | `/browserstack/builds` | Lista os builds da API Automate do BrowserStack. |
+| `POST` | `/slack/task-summary` | Envia um resumo simples de tarefa para um webhook do Slack. |
 
-## Configuração
+## Variáveis de ambiente
 
-1. Crie um arquivo `.env` com as variáveis necessárias:
+Crie um arquivo `.env` (opcional) com os dados abaixo:
 
 ```
 BROWSERSTACK_USERNAME=seu_usuario
@@ -23,35 +24,28 @@ ALLOWED_ORIGINS=http://localhost:5173,https://seu-frontend.com
 PORT=3000
 ```
 
-2. Execute os comandos padrão do projeto:
+## Scripts disponíveis
 
 ```bash
-npm run build    # transpila para JavaScript (pasta dist)
-npm start        # executa o build gerado em modo local
-npm run dev      # recompila continuamente para desenvolvimento
-npm run lint     # roda o type-check + ESLint sobre o build gerado
-npm run format   # formata o código com Prettier
+npm run build   # Transpila os arquivos TypeScript para a pasta dist
+npm start       # Executa o build gerado
+npm run dev     # Observa mudanças e recompila automaticamente
+npm run lint    # Garante que o código JavaScript emitido esteja padronizado
+npm run format  # Formata o código fonte com Prettier
 ```
 
-> **Observação:** em ambientes onde a instalação de pacotes via `npm install` estiver bloqueada,
-é possível utilizar as versões globais de `node`, `tsc`, `eslint` e `prettier`.
-O `package.json` mantém as dependências necessárias para ambientes com acesso liberado.
+> Dica: execute `npm run build` antes de `npm start` ou do deploy na Vercel, já que o
+> handler publicado fica em `dist/index.js`.
 
 ## Husky e commit lint
 
-O repositório já possui os ganchos em `.husky/`:
+Os hooks estão configurados em `.husky/`. Após instalar as dependências rode `npm run prepare`
+para ativá-los. O hook `commit-msg` agora utiliza o Commitlint com a configuração convencional:
 
-- `pre-commit` → executa `npm run lint`.
-- `commit-msg` → valida a mensagem com o script `scripts/check-commit-message.mjs`.
-
-Após instalar as dependências (quando possível) execute `npm run prepare` para que o Husky
-configure automaticamente os hooks locais. Caso não seja possível, defina manualmente o hooksPath:
-
-```bash
-git config core.hooksPath .husky
+```js
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+}
 ```
 
-## Deploy na Vercel
-
-O arquivo `vercel.json` direciona todas as requisições para `dist/index.js`.
-Basta executar `npm run build` antes do deploy para garantir que o handler esteja atualizado.
+Caso precise ativar manualmente, use `git config core.hooksPath .husky`.

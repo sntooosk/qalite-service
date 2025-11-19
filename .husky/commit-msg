@@ -1,2 +1,7 @@
 #!/bin/sh
-npm run check-commit "$1"
+
+if [ -x "./node_modules/.bin/commitlint" ]; then
+  npx --no commitlint --edit "$1"
+else
+  echo "[husky] commitlint skipped (dependency not installed)"
+fi
