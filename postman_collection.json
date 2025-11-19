@@ -36,7 +36,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"submittedBy\": {\n    \"name\": \"Maria QA\",\n    \"email\": \"maria@example.com\"\n  },\n  \"scenario\": {\n    \"title\": \"Fluxo de pagamento via Pix\",\n    \"stage\": \"Homologação\",\n    \"category\": \"Financeiro\"\n  },\n  \"environment\": {\n    \"label\": \"Sandbox QA\",\n    \"taskUrl\": \"https://app.asana.com/0/123456789/987654321\"\n  },\n  \"test\": {\n    \"platform\": \"Chrome 114 (Windows 11)\",\n    \"status\": \"Aprovado\",\n    \"durationMs\": 125000,\n    \"completedAt\": 1714418400000\n  }\n}"
+          "raw": "{\n  \"environmentSummary\": {\n    \"totalTime\": \"00:15:23\",\n    \"scenariosCount\": 3,\n    \"executedScenariosMessage\": \"3 cenários executados\",\n    \"storyfixCount\": 0,\n    \"jira\": \"Não informado\",\n    \"suiteName\": \"Teste\",\n    \"suiteDetails\": \"3 cenários vinculados\",\n    \"participantsCount\": 1,\n    \"monitoredUrls\": [\n      \"https://qa-lite.example.com/\"\n    ],\n    \"attendees\": [\n      {\n        \"name\": \"Maria QA\",\n        \"email\": \"maria@example.com\"\n      }\n    ]\n  }\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/slack/task-summary",
@@ -48,7 +48,7 @@
             "task-summary"
           ]
         },
-        "description": "Dispara para o Slack o resumo de uma tarefa concluída. Informe ao menos o campo scenario.title para evitar erro 400."
+        "description": "Dispara para o Slack o resumo de uma tarefa concluída. Informe uma mensagem direta no campo message ou os dados de ambiente em environmentSummary."
       },
       "response": []
     }

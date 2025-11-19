@@ -10,12 +10,17 @@ export class SendTaskSummaryUseCase {
   ) {}
 
   async execute(payload: TaskSummaryPayload): Promise<void> {
-    const scenarioTitle = payload?.scenario?.title?.trim()
-    if (!scenarioTitle) {
-      throw new HttpError(400, 'Scenario title is required.')
+    const directMessage = payload?.message?.trim()
+    if (directMessage) {
+      await this.notifier.sendMessage(directMessage)
+      return
     }
 
-    const message = this.formatter.buildMessage(payload)
-    await this.notifier.sendMessage(message)
+    if (!payload?.environmentSummary) {
+      throw new HttpError(400, 'Environment summary is required.')
+    }
+
+    const formattedMessage = this.formatter.buildMessage(payload)
+    await this.notifier.sendMessage(formattedMessage)
   }
 }
