@@ -1,7 +1,7 @@
-import type { BrowserstackCredentials } from '../../config'
-import { HttpError } from '../../errors'
-import { BrowserstackBuild } from '../../domain/entities/browserstack-build'
-import { BrowserstackGateway } from '../../application/ports/browserstack-gateway'
+import type { BrowserstackCredentials } from '../../config.js'
+import { HttpError } from '../../errors.js'
+import { BrowserstackBuild } from '../../domain/entities/browserstack-build.js'
+import { BrowserstackGateway } from '../../application/ports/browserstack-gateway.js'
 
 const BASE_URL = 'https://api.browserstack.com/automate'
 

@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'node:http'
 import { URL } from 'node:url'
 
-import { HttpError } from '../../errors'
+import { HttpError } from '../../errors.js'
 
 export type RouteHandler = (req: IncomingMessage, res: ServerResponse) => Promise<void>
 

@@ -1,7 +1,7 @@
-import { HttpError } from '../../errors'
-import { TaskSummaryPayload } from '../../domain/entities/task-summary'
-import { TaskSummaryFormatter } from '../../domain/services/task-summary-formatter'
-import { SlackNotifier } from '../ports/slack-notifier'
+import { HttpError } from '../../errors.js'
+import { TaskSummaryPayload } from '../../domain/entities/task-summary.js'
+import { TaskSummaryFormatter } from '../../domain/services/task-summary-formatter.js'
+import { SlackNotifier } from '../ports/slack-notifier.js'
 
 export class SendTaskSummaryUseCase {
   constructor(

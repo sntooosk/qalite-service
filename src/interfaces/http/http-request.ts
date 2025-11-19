@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'node:http'
 
-import { HttpError } from '../../errors'
+import { HttpError } from '../../errors.js'
 
 export const readJsonBody = async <T>(req: IncomingMessage): Promise<T> => {
   const chunks: Buffer[] = []

@@ -1,4 +1,4 @@
-import { TaskSummaryPayload } from '../entities/task-summary'
+import { TaskSummaryPayload } from '../entities/task-summary.js'
 
 type Primitive = string | number | boolean | undefined | null
 

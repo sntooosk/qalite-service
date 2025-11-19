@@ -1,11 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'node:http'
 
-import { ListBrowserstackBuildsUseCase } from '../../application/usecases/list-browserstack-builds'
-import { SendTaskSummaryUseCase } from '../../application/usecases/send-task-summary'
-import { TaskSummaryPayload } from '../../domain/entities/task-summary'
-import { json } from './http-response'
-import { readJsonBody } from './http-request'
-import { RouteTable } from './router'
+import { ListBrowserstackBuildsUseCase } from '../../application/usecases/list-browserstack-builds.js'
+import { SendTaskSummaryUseCase } from '../../application/usecases/send-task-summary.js'
+import { TaskSummaryPayload } from '../../domain/entities/task-summary.js'
+import { json } from './http-response.js'
+import { readJsonBody } from './http-request.js'
+import { RouteTable } from './router.js'
 
 interface RouteDependencies {
   listBrowserstackBuilds: ListBrowserstackBuildsUseCase

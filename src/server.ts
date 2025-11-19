@@ -1,16 +1,16 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 
-import { config } from './config'
-import { HttpError } from './errors'
-import { ListBrowserstackBuildsUseCase } from './application/usecases/list-browserstack-builds'
-import { SendTaskSummaryUseCase } from './application/usecases/send-task-summary'
-import { TaskSummaryFormatter } from './domain/services/task-summary-formatter'
-import { BrowserstackApiGateway } from './infrastructure/browserstack/browserstack-gateway'
-import { SlackWebhookNotifier } from './infrastructure/slack/slack-webhook-notifier'
-import { applyCors } from './interfaces/http/cors'
-import { json } from './interfaces/http/http-response'
-import { HttpRouter } from './interfaces/http/router'
-import { buildRouteTable } from './interfaces/http/routes'
+import { config } from './config.js'
+import { HttpError } from './errors.js'
+import { ListBrowserstackBuildsUseCase } from './application/usecases/list-browserstack-builds.js'
+import { SendTaskSummaryUseCase } from './application/usecases/send-task-summary.js'
+import { TaskSummaryFormatter } from './domain/services/task-summary-formatter.js'
+import { BrowserstackApiGateway } from './infrastructure/browserstack/browserstack-gateway.js'
+import { SlackWebhookNotifier } from './infrastructure/slack/slack-webhook-notifier.js'
+import { applyCors } from './interfaces/http/cors.js'
+import { json } from './interfaces/http/http-response.js'
+import { HttpRouter } from './interfaces/http/router.js'
+import { buildRouteTable } from './interfaces/http/routes.js'
 
 const browserstackGateway = new BrowserstackApiGateway(config.browserstack)
 const slackNotifier = new SlackWebhookNotifier(config.slackWebhookUrl)

@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'node:http'
 
-import { json } from './http-response'
+import { json } from './http-response.js'
 
 const isOriginAllowed = (origin: string | undefined, allowedOrigins: string[]): boolean => {
   if (!origin) {

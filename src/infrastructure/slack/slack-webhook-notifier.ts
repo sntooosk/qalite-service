@@ -1,5 +1,5 @@
-import { HttpError } from '../../errors'
-import { SlackNotifier } from '../../application/ports/slack-notifier'
+import { HttpError } from '../../errors.js'
+import { SlackNotifier } from '../../application/ports/slack-notifier.js'
 
 export class SlackWebhookNotifier implements SlackNotifier {
   constructor(private readonly webhookUrl: string | undefined) {}

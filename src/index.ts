@@ -1,5 +1,5 @@
-import { config } from './config'
-import { requestHandler, server } from './server'
+import { config } from './config.js'
+import { requestHandler, server } from './server.js'
 
 if (!config.isProduction) {
   server.listen(config.port, () => {
