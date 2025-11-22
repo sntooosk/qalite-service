@@ -7,12 +7,12 @@ export class ListBrowserstackBuildsUseCase {
 
   async execute(credentials: BrowserstackCredentials): Promise<BrowserstackBuild[]> {
     const username = credentials.username?.trim()
-    const acessKey = credentials.acessKey?.trim()
+    const accessKey = credentials.accessKey?.trim() ?? credentials.acessKey?.trim()
 
-    if (!username || !acessKey) {
-      throw new HttpError(400, 'Username e acessKey são obrigatórios.')
+    if (!username || !accessKey) {
+      throw new HttpError(400, 'Username e accessKey são obrigatórios.')
     }
 
-    return this.client.listBuilds({ username, acessKey })
+    return this.client.listBuilds({ username, accessKey })
   }
 }

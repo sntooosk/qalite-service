@@ -65,8 +65,8 @@ export class BrowserstackApiClient implements BrowserstackClient {
 
   private buildAuthorization(credentials: BrowserstackCredentials): string {
     const username = credentials.username ?? ''
-    const acessKey = credentials.acessKey ?? ''
-    const token = Buffer.from(`${username}:${acessKey}`).toString('base64')
+    const accessKey = credentials.accessKey ?? credentials.acessKey ?? ''
+    const token = Buffer.from(`${username}:${accessKey}`).toString('base64')
     return `Basic ${token}`
   }
 }

@@ -1,5 +1,12 @@
 export interface BrowserstackCredentials {
   username?: string
+  /**
+   * Preferred property name for the BrowserStack access key.
+   */
+  accessKey?: string
+  /**
+   * @deprecated Use {@link accessKey} instead. Kept for backward compatibility.
+   */
   acessKey?: string
 }
 
