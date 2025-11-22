@@ -3,11 +3,10 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import { config } from './config.js'
 import { HttpError } from './errors.js'
 import { SendTaskSummaryUseCase } from './application/usecases/send-task-summary.js'
-import { ListAutomationExecutionsUseCase } from './application/usecases/list-automation-executions.js'
-import { RegisterAutomationExecutionUseCase, DefaultAutomationExecutionFactory } from './application/usecases/register-automation-execution.js'
+import { ListBrowserstackBuildsUseCase } from './application/usecases/list-browserstack-builds.js'
 import { TaskSummaryFormatter } from './domain/services/task-summary-formatter.js'
 import { SlackWebhookNotifier } from './infrastructure/slack/slack-webhook-notifier.js'
-import { InMemoryAutomationExecutionRepository } from './infrastructure/automation/in-memory-automation-execution-repository.js'
+import { BrowserstackApiClient } from './infrastructure/browserstack/browserstack-api-client.js'
 import { applyCors } from './interfaces/http/cors.js'
 import { json } from './interfaces/http/http-response.js'
 import { HttpRouter } from './interfaces/http/router.js'
@@ -15,23 +14,15 @@ import { buildRouteTable } from './interfaces/http/routes.js'
 
 const slackNotifier = new SlackWebhookNotifier()
 const formatter = new TaskSummaryFormatter()
-const automationExecutionRepository = new InMemoryAutomationExecutionRepository()
-const automationExecutionFactory = new DefaultAutomationExecutionFactory()
+const browserstackClient = new BrowserstackApiClient()
 
 const sendTaskSummaryUseCase = new SendTaskSummaryUseCase(formatter, slackNotifier)
-const registerAutomationExecutionUseCase = new RegisterAutomationExecutionUseCase(
-  automationExecutionRepository,
-  automationExecutionFactory,
-)
-const listAutomationExecutionsUseCase = new ListAutomationExecutionsUseCase(
-  automationExecutionRepository,
-)
+const listBrowserstackBuildsUseCase = new ListBrowserstackBuildsUseCase(browserstackClient)
 
 const router = new HttpRouter(
   buildRouteTable({
     sendTaskSummary: sendTaskSummaryUseCase,
-    registerAutomationExecution: registerAutomationExecutionUseCase,
-    listAutomationExecutions: listAutomationExecutionsUseCase,
+    listBrowserstackBuilds: listBrowserstackBuildsUseCase,
   }),
 )
 

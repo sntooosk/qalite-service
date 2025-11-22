@@ -15,27 +15,6 @@ export const openApiDocument = {
     },
   ],
   paths: {
-    '/health': {
-      get: {
-        summary: 'Status da API',
-        description: 'Usada para monitoramento e health-checks simples.',
-        responses: {
-          200: {
-            description: 'API disponível.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    status: { type: 'string', example: 'ok' },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     '/slack/task-summary': {
       post: {
         summary: 'Enviar resumo de QA para o Slack',
@@ -89,68 +68,38 @@ export const openApiDocument = {
         },
       },
     },
-    '/automations/executions': {
+    '/browserstack/builds': {
       post: {
-        summary: 'Registrar execução de automação',
-        description:
-          'Recebe uma execução de automação (por exemplo, disparada pelo QaLite-Servidor) e armazena em memória para consulta posterior.',
+        summary: 'Listar builds da BrowserStack',
+        description: 'Consulta as builds do BrowserStack Automate usando as credenciais fornecidas no payload.',
         requestBody: {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/AutomationExecutionPayload' },
-              example: {
-                username: 'browser-user',
-                password: 'superSecret!',
-                status: 'queued',
-                provider: 'qalite-servidor',
-                executionId: 'bt-123',
-                startedAt: '2024-02-10T10:00:00Z',
-                finishedAt: '2024-02-10T10:05:00Z',
-                details: { browser: 'chrome', os: 'windows' },
-              },
+              schema: { $ref: '#/components/schemas/BrowserstackCredentials' },
             },
           },
         },
         responses: {
           200: {
-            description: 'Execução registrada com sucesso.',
+            description: 'Lista de builds retornadas pela BrowserStack.',
             content: {
               'application/json': {
                 schema: {
                   type: 'object',
                   properties: {
-                    message: { type: 'string', example: 'Execução de automação registrada.' },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Username e password ausentes ou inválidos.',
-          },
-        },
-      },
-      get: {
-        summary: 'Listar execuções de automação recebidas',
-        description: 'Retorna todas as execuções armazenadas em memória no serviço.',
-        responses: {
-          200: {
-            description: 'Lista de execuções.',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    executions: {
+                    builds: {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/AutomationExecution' },
+                      items: { $ref: '#/components/schemas/BrowserstackBuild' },
                     },
                   },
                 },
               },
             },
           },
+          400: { description: 'Credenciais ausentes ou inválidas.' },
+          401: { description: 'BrowserStack recusou as credenciais fornecidas.' },
+          502: { description: 'Erro ao consultar a API da BrowserStack.' },
         },
       },
     },
@@ -230,44 +179,28 @@ export const openApiDocument = {
           email: { type: 'string', format: 'email' },
         },
       },
-      AutomationExecutionPayload: {
+      BrowserstackCredentials: {
         type: 'object',
         required: ['username', 'password'],
         properties: {
-          username: { type: 'string', description: 'Usuário usado na execução automatizada.' },
-          password: { type: 'string', description: 'Senha usada na execução automatizada.' },
-          status: { type: 'string', description: 'Estado atual da execução.', example: 'queued' },
-            provider: { type: 'string', description: 'Origem do disparo da automação.', example: 'qalite-servidor' },
-          executionId: { type: 'string', description: 'Identificador externo da execução.' },
-          startedAt: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Data e hora do início da execução.',
-          },
-          finishedAt: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Data e hora da finalização da execução.',
-          },
-          details: {
-            type: 'object',
-            additionalProperties: true,
-            description: 'Metadados livres enviados pelo QaLite-Servidor.',
-          },
+          username: { type: 'string', description: 'Username do BrowserStack Automate.' },
+          password: { type: 'string', description: 'Password ou Access Key do BrowserStack.' },
         },
       },
-      AutomationExecution: {
-        allOf: [
-          { $ref: '#/components/schemas/AutomationExecutionPayload' },
-          {
-            type: 'object',
-            required: ['id', 'receivedAt'],
-            properties: {
-              id: { type: 'string', format: 'uuid' },
-              receivedAt: { type: 'string', format: 'date-time' },
-            },
-          },
-        ],
+      BrowserstackBuild: {
+        type: 'object',
+        required: ['id'],
+        properties: {
+          id: { type: 'string', description: 'Identificador hash da build no BrowserStack.' },
+          name: { type: 'string', description: 'Nome da build.' },
+          status: { type: 'string', description: 'Status atual reportado pela BrowserStack.' },
+          duration: { type: 'integer', format: 'int64', description: 'Duração em segundos.' },
+          buildTag: { type: 'string', description: 'Tag configurada para a build.' },
+          publicUrl: { type: 'string', format: 'uri', description: 'URL pública da build, se disponível.' },
+          devices: { type: 'array', items: { type: 'object' }, description: 'Dispositivos associados à build.' },
+          createdAt: { type: 'string', format: 'date-time', description: 'Data de criação da build.' },
+          startedAt: { type: 'string', format: 'date-time', description: 'Data de início da build.' },
+        },
       },
     },
   },
