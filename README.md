@@ -1,19 +1,52 @@
 # QaLite-Servidor API
 
-Servidor HTTP minimalista escrito em TypeScript que encaminha resumos de QA e execuções de automação para o ecossistema QaLite-Servidor. O serviço mantém uma estrutura enxuta em camadas (configuração, aplicação, domínio, infraestrutura e interfaces) para preservar a separação de responsabilidades sem frameworks externos.
+Servidor HTTP minimalista em TypeScript que atua como proxy para dois fluxos principais do ecossistema QaLite:
+
+- Envio de mensagens formatadas para um webhook do Slack.
+- Listagem das execuções (builds) mais recentes na BrowserStack usando credenciais fornecidas na requisição.
+
+O código é organizado em camadas explícitas (configuração, aplicação, domínio, infraestrutura e interfaces) sem dependência de frameworks web.
 
 ## Endpoints
 
-| Método | Rota                        | Descrição                                                                 |
-| ------ | --------------------------- | ------------------------------------------------------------------------- |
-| `GET`  | `/health`                   | Verificação rápida de disponibilidade.                                    |
-| `GET`  | `/openapi.json`             | Documento OpenAPI 3.0 usado pelo Swagger UI.                              |
-| `GET`  | `/docs`                     | Interface do Swagger UI servida via CDN.                                  |
-| `POST` | `/slack/task-summary`       | Recebe um resumo de QA e repassa para o webhook informado no payload.     |
-| `POST` | `/automations/executions`   | Registra uma execução de automação vinda do QaLite-Servidor.             |
-| `GET`  | `/automations/executions`   | Lista as execuções de automação recebidas em memória.                     |
+| Método | Rota                  | Descrição                                                                 |
+| ------ | --------------------- | ------------------------------------------------------------------------- |
+| `POST` | `/slack/task-summary` | Recebe um resumo de QA ou mensagem livre e repassa para o webhook do Slack. |
+| `POST` | `/browserstack/builds` | Retorna a lista de builds da BrowserStack informando usuário e access key. |
 
-> Caso não precise da interface visual, consuma diretamente a especificação em `/openapi.json`. A coleção Postman `postman_collection.json` traz exemplos prontos para todos os endpoints.
+> Não há persistência local ou interface visual: cada requisição é tratada de forma stateless e retorna JSON.
+
+### Payloads
+
+#### Enviar resumo ou mensagem para Slack (`POST /slack/task-summary`)
+
+- `webhookUrl` é obrigatório para todas as chamadas.
+- Se `message` estiver presente, ele é enviado diretamente; caso contrário, `environmentSummary` é formatado antes do envio.
+
+```json
+{
+  "webhookUrl": "https://hooks.slack.com/services/XXX/YYY/ZZZ",
+  "message": "Mensagem livre para o canal",
+  "environmentSummary": {
+    "identifier": "Suite regressiva",
+    "totalTime": "12m 30s",
+    "executedScenariosCount": 25,
+    "participantsCount": 3
+  }
+}
+```
+
+#### Listar builds na BrowserStack (`POST /browserstack/builds`)
+
+- `username` e `accessKey` (ou o legado `acessKey`) são obrigatórios.
+- Retorna uma lista com `id`, `name`, `status`, `duration`, `buildTag` e `publicUrl` por build.
+
+```json
+{
+  "username": "seu-usuario",
+  "accessKey": "sua-chave"
+}
+```
 
 ## Variáveis de ambiente
 
@@ -24,7 +57,8 @@ ALLOWED_ORIGINS=http://localhost:5173,https://seu-frontend.com
 PORT=3000
 ```
 
-> O webhook do Slack não é mais lido via `.env`; ele deve ser enviado no campo `webhookUrl` do corpo da requisição.
+- Se nenhuma origem for informada, o CORS permite por padrão `http://localhost:5173` e `https://qualitydigital-qamanager.vercel.app`.
+- O webhook do Slack **não** é lido via `.env`; ele deve ser enviado no campo `webhookUrl` do corpo da requisição.
 
 ## Como executar
 
@@ -48,8 +82,8 @@ npm run format  # Formata todo o código com Prettier
 - `src/config.ts`: leitura de variáveis de ambiente e defaults de CORS/porta.
 - `src/application`: casos de uso e portas (ex.: `SendTaskSummaryUseCase`).
 - `src/domain`: contratos e formatação de mensagens enviadas ao Slack.
-- `src/infrastructure`: integrações concretas (ex.: webhook do Slack).
-- `src/interfaces/http`: roteador HTTP, CORS, Swagger UI e handlers.
+- `src/infrastructure`: integrações concretas (ex.: webhook do Slack, API BrowserStack).
+- `src/interfaces/http`: roteador HTTP, CORS e handlers das rotas expostas.
 
 ## Husky e commit lint
 
