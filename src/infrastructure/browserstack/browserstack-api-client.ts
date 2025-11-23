@@ -10,9 +10,6 @@ type BrowserstackBuildResponse = {
     duration?: number
     build_tag?: string
     public_url?: string
-    devices?: unknown[]
-    created_at?: string
-    started_at?: string
   }
 }
 
@@ -57,9 +54,6 @@ export class BrowserstackApiClient implements BrowserstackClient {
         duration: build.duration,
         buildTag: build.build_tag,
         publicUrl: build.public_url,
-        devices: build.devices,
-        createdAt: build.created_at,
-        startedAt: build.started_at,
       }))
   }
 

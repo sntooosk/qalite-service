@@ -17,7 +17,4 @@ export interface BrowserstackBuild {
   duration?: number
   buildTag?: string
   publicUrl?: string
-  devices?: unknown[]
-  createdAt?: string
-  startedAt?: string
 }
