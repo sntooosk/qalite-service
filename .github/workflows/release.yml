@@ -12,12 +12,19 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Allow Husky bypass for semantic-release
+        run: echo "SEMANTIC_RELEASE=true" >> $GITHUB_ENV
+
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.14.0
+          node-version: 22
+
       - run: npm ci
+
       - name: Run semantic-release
         run: npx semantic-release
         env:
