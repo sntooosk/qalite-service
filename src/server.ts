@@ -11,20 +11,41 @@ import { applyCors } from './interfaces/http/cors.js'
 import { json } from './interfaces/http/http-response.js'
 import { HttpRouter } from './interfaces/http/router.js'
 import { buildRouteTable } from './interfaces/http/routes.js'
+import { TaskSummaryController } from './interfaces/http/controllers/task-summary-controller.js'
+import { BrowserstackBuildsController } from './interfaces/http/controllers/browserstack-builds-controller.js'
 
-const slackNotifier = new SlackWebhookNotifier()
-const formatter = new TaskSummaryFormatter()
-const browserstackClient = new BrowserstackApiClient()
+const buildRouter = (): HttpRouter => {
+  const slackNotifier = new SlackWebhookNotifier()
+  const formatter = new TaskSummaryFormatter()
+  const browserstackClient = new BrowserstackApiClient()
 
-const sendTaskSummaryUseCase = new SendTaskSummaryUseCase(formatter, slackNotifier)
-const listBrowserstackBuildsUseCase = new ListBrowserstackBuildsUseCase(browserstackClient)
+  const sendTaskSummaryUseCase = new SendTaskSummaryUseCase(formatter, slackNotifier)
+  const listBrowserstackBuildsUseCase = new ListBrowserstackBuildsUseCase(browserstackClient)
 
-const router = new HttpRouter(
-  buildRouteTable({
-    sendTaskSummary: sendTaskSummaryUseCase,
-    listBrowserstackBuilds: listBrowserstackBuildsUseCase,
-  }),
-)
+  const taskSummaryController = new TaskSummaryController(sendTaskSummaryUseCase)
+  const browserstackBuildsController = new BrowserstackBuildsController(
+    listBrowserstackBuildsUseCase,
+  )
+
+  return new HttpRouter(
+    buildRouteTable({
+      taskSummaryController,
+      browserstackBuildsController,
+    }),
+  )
+}
+
+const router = buildRouter()
+
+const handleError = (res: ServerResponse, error: unknown): void => {
+  if (error instanceof HttpError) {
+    json(res, error.statusCode, { error: error.message })
+    return
+  }
+
+  console.error('[server] request failed', error)
+  json(res, 500, { error: 'Internal server error.' })
+}
 
 export const requestHandler = async (
   req: IncomingMessage,
@@ -37,13 +58,7 @@ export const requestHandler = async (
 
     await router.route(req, res)
   } catch (error) {
-    if (error instanceof HttpError) {
-      json(res, error.statusCode, { error: error.message })
-      return
-    }
-
-    console.error('[server] request failed', error)
-    json(res, 500, { error: 'Internal server error.' })
+    handleError(res, error)
   }
 }
 
