@@ -1,12 +1,11 @@
-name: CI
+name: Release Pipeline
 
 on:
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  release:
+    types: [created, published]
 
 jobs:
-  lint:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,4 +13,4 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run lint
+      - run: npm run build

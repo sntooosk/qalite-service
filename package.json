@@ -8,9 +8,19 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsc -w -p tsconfig.json",
-    "lint": "eslint dist --ext .js",
-    "format": "prettier --write .",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "prepare": "husky install"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --max-warnings=0",
+      "prettier --write"
+    ],
+    "*{js,json,md,css}": [
+      "prettier --write"
+    ]
   },
   "keywords": [
     "slack"
@@ -23,6 +33,7 @@
     "eslint": "^9.9.0",
     "husky": "^9.1.4",
     "prettier": "^3.3.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "lint-staged": "^16.2.7"
   }
 }
